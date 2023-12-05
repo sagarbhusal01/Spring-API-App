@@ -1,0 +1,26 @@
+#loginWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 95vh;
+}
+
+#LoginSideContainer {
+    width: 40vw;
+    height: 80vh;
+    background-color: aqua;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#RegisterSideContainer {
+    width: 40vw;
+    height: 80vh;
+    background-color: rgb(255, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}

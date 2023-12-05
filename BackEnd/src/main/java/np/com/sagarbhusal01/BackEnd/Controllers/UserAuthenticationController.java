@@ -2,6 +2,7 @@ package np.com.sagarbhusal01.BackEnd.Controllers;
 import np.com.sagarbhusal01.BackEnd.DataModels.UserAuthenticationDataModel;
 import np.com.sagarbhusal01.BackEnd.Repositories.UserAuthenticationSQLRepository;
 import np.com.sagarbhusal01.BackEnd.Security.Hashing;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +29,19 @@ public class UserAuthenticationController {
         return sqlUser.findByEmail(email);
     }
 
+
 //
 //
 //
+
+
+    @PostMapping("/getbyapi")
+    public UserAuthenticationDataModel GETBYAPIKEY(@RequestBody Map<String,String> Body)
+    {
+        return sqlUser.findByApikey(Body.get("apikey"));
+    }
+
+
 
     @PostMapping("/authenticate")
     public Object AuthenticateUser(@RequestBody Map<String, String> Body) {

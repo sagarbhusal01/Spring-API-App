@@ -8,5 +8,6 @@ public interface UserAuthenticationSQLRepository extends JpaRepository<UserAuthe
     public UserAuthenticationDataModel findByEmail(String email);
      public UserAuthenticationDataModel findByApikey(String apikey);
 
+
 }
 
