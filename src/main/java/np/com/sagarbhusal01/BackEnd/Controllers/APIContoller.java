@@ -2,6 +2,9 @@ package np.com.sagarbhusal01.BackEnd.Controllers;
 
 import np.com.sagarbhusal01.BackEnd.DataModels.APIdataModel;
 import np.com.sagarbhusal01.BackEnd.DataModels.UserAuthenticationDataModel;
+import np.com.sagarbhusal01.BackEnd.ErrorHandler.LimitReached;
+import np.com.sagarbhusal01.BackEnd.ErrorHandler.NoPermissionError;
+import np.com.sagarbhusal01.BackEnd.ErrorHandler.NotFoundError;
 import np.com.sagarbhusal01.BackEnd.Global.FreeUserLimit;
 import np.com.sagarbhusal01.BackEnd.Repositories.APIdataSQLRepository;
 import np.com.sagarbhusal01.BackEnd.Repositories.Macros.ReadCountIncrement;
@@ -35,7 +38,7 @@ public class APIContoller {
 
         UserAuthenticationDataModel User=sqlUser.findByApikey(api_key);
         if(User==null) {
-            return null;
+            throw new NotFoundError();
         }
             List<APIdataModel> ALlData=apidatasql.findAll();
             if(User.getReadcount()<=freeUserLimit.getReadLimit()&& Objects.equals(User.getAccounttype(),"FREE"))
@@ -51,7 +54,7 @@ public class APIContoller {
                 sqlUser.save(User);
                 return ALlData;
             }
-            else return null;
+            else throw  new NotFoundError();
 
     }
 
@@ -61,7 +64,7 @@ public class APIContoller {
     public List<APIdataModel> FindDoctorsByHospitalID(@PathVariable("api_key") String api_key,@PathVariable("hospitalid") String hospitalid) {
         UserAuthenticationDataModel User = sqlUser.findByApikey(api_key);
         if (User == null) {
-            return null;
+            throw new NotFoundError();
         }
 
             List<APIdataModel> ALlData=apidatasql.findByHospitalid(hospitalid);
@@ -78,7 +81,7 @@ public class APIContoller {
                 sqlUser.save(User);
                 return ALlData;
             }
-            else return null;
+            else throw new LimitReached();
 
     }
 
@@ -90,11 +93,11 @@ public class APIContoller {
 
         if(User==null)
         {
-            return null;
+            throw new NotFoundError();
         }
         if(!Objects.equals(User.getPermissions(),"BOTH"))
         {
-            return null;
+            throw new NoPermissionError();
         }
 
             APIdataModel NewApi=new APIdataModel();
@@ -114,7 +117,7 @@ public class APIContoller {
                 writeCountIncrement.INCREASE(api_key);
                 return apidatasql.save(NewApi);
             }
-            else return null;
+        throw new NoPermissionError();
 
     }
 

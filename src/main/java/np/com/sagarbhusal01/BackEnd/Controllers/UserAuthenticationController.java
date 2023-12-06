@@ -1,9 +1,13 @@
 package np.com.sagarbhusal01.BackEnd.Controllers;
 import np.com.sagarbhusal01.BackEnd.DataModels.UserAuthenticationDataModel;
+import np.com.sagarbhusal01.BackEnd.ErrorHandler.EmailExists;
+import np.com.sagarbhusal01.BackEnd.ErrorHandler.NotAuthorized;
+import np.com.sagarbhusal01.BackEnd.ErrorHandler.NotFoundError;
 import np.com.sagarbhusal01.BackEnd.Repositories.UserAuthenticationSQLRepository;
 import np.com.sagarbhusal01.BackEnd.Security.Hashing;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -26,7 +30,12 @@ public class UserAuthenticationController {
     @Deprecated
     @GetMapping("/get/{email}")
     public UserAuthenticationDataModel getAllData(@PathVariable("email") String email) {
-        return sqlUser.findByEmail(email);
+        UserAuthenticationDataModel data=sqlUser.findByEmail(email);
+        if(data==null)
+        {
+            throw new NotFoundError();
+        }
+        return data;
     }
 
 
@@ -38,7 +47,13 @@ public class UserAuthenticationController {
     @PostMapping("/getbyapi")
     public UserAuthenticationDataModel GETBYAPIKEY(@RequestBody Map<String,String> Body)
     {
-        return sqlUser.findByApikey(Body.get("apikey"));
+        UserAuthenticationDataModel data=sqlUser.findByApikey(Body.get("apikey"));
+
+        if(data==null)
+        {
+          throw new NotFoundError();
+        }
+        return data ;
     }
 
 
@@ -53,7 +68,7 @@ public class UserAuthenticationController {
                 return StoredData;
             }
         }
-        return "Sorry Email or password donot match";
+        throw new NotAuthorized("Email or password donot match");
     }
 
 
@@ -84,7 +99,7 @@ public class UserAuthenticationController {
         }
 
         else
-            return "Email Already Exist";
+            throw new EmailExists();
     }
 
 
